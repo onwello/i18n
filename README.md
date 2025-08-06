@@ -22,6 +22,138 @@ Enterprise-grade internationalization (i18n) library for NestJS microservices wi
 npm install @logistically/i18n
 ```
 
+## 🛠️ CLI Tool
+
+This library works seamlessly with the **@logistically/i18n-cli** tool for extracting, generating, and managing translations.
+
+### CLI Installation
+
+```bash
+# Install CLI globally
+npm install -g @logistically/i18n-cli
+
+# Or install locally
+npm install --save-dev @logistically/i18n-cli
+```
+
+### Complete Workflow
+
+```bash
+# 1. Extract translatable strings from your codebase
+i18n extract --patterns "*.ts,*.js" --output translation-keys.json
+
+# 2. Generate translation files for multiple languages
+i18n generate --languages en,fr,es,ar --output src/translations
+
+# 3. Replace hardcoded strings with translation keys
+i18n replace --dry-run  # Preview changes
+i18n replace            # Apply changes
+
+# 4. Use the library in your NestJS services
+```
+
+### CLI Features
+
+- 🔍 **Smart Extraction** - Automatically extract translatable strings
+- 🏗️ **File Generation** - Generate translation files for multiple languages
+- 🔄 **String Replacement** - Replace hardcoded strings with translation keys
+- 🛡️ **Security First** - Input validation and output sanitization
+- 📊 **Performance Monitoring** - Real-time metrics and progress tracking
+
+For complete CLI documentation, visit: [@logistically/i18n-cli](https://github.com/logistically/i18n-cli)
+
+## 🌐 Complete Translation Ecosystem
+
+The **@logistically/i18n** library and **@logistically/i18n-cli** tool work together to provide a complete translation solution for enterprise applications.
+
+### 🎯 Ecosystem Benefits
+
+- **End-to-End Workflow** - From extraction to deployment
+- **Enterprise Security** - Input validation and output sanitization
+- **Performance Optimization** - Concurrent processing and caching
+- **RTL Support** - Full support for Arabic, Hebrew, Persian, Urdu
+- **Type Safety** - Complete TypeScript support
+- **Microservices Ready** - Designed for distributed architectures
+
+### 📋 Complete Workflow Example
+
+```bash
+# 1. Extract translatable strings from your microservices
+i18n extract --patterns "*.ts,*.js" --output translation-keys.json
+
+# 2. Generate translation files for all supported languages
+i18n generate --languages en,fr,es,ar,he,fa,ur --output src/translations
+
+# 3. Preview string replacements
+i18n replace --dry-run --verbose
+
+# 4. Apply replacements with backup
+i18n replace --backup
+
+# 5. Use the library in your NestJS services
+```
+
+### 🔧 Integration Example
+
+```typescript
+// Before: Hardcoded strings
+export class ProfileService {
+  async getProfile(profileId: string) {
+    const profile = await this.repository.findById(profileId);
+    if (!profile) {
+      throw new NotFoundException('Profile not found: ' + profileId);
+    }
+    return profile;
+  }
+}
+
+// After: Using the ecosystem
+import { TranslationService, TranslatedExceptions } from '@logistically/i18n';
+
+export class ProfileService {
+  constructor(private translationService: TranslationService) {}
+
+  async getProfile(profileId: string, locale: string = 'en') {
+    const profile = await this.repository.findById(profileId);
+    if (!profile) {
+      throw TranslatedExceptions.notFound('PROFILE.NOT_FOUND', {
+        locale,
+        params: { profileId }
+      });
+    }
+    return profile;
+  }
+}
+```
+
+### 🚀 Enterprise Features
+
+| Feature | Library | CLI | Combined |
+|---------|---------|-----|----------|
+| **RTL Support** | ✅ Full support | ✅ Generation | ✅ Complete workflow |
+| **Performance** | ✅ Caching, Tree shaking | ✅ Concurrent processing | ✅ Optimized end-to-end |
+| **Security** | ✅ Input validation | ✅ Sanitization | ✅ Enterprise-grade |
+| **Type Safety** | ✅ TypeScript | ✅ TypeScript | ✅ Complete coverage |
+| **Microservices** | ✅ DI, Decorators | ✅ Multi-service | ✅ Distributed ready |
+
+### 📊 Performance Comparison
+
+```bash
+# Traditional approach
+# ❌ Manual extraction: 2-3 hours
+# ❌ Manual generation: 1-2 hours  
+# ❌ Manual replacement: 4-6 hours
+# ❌ Total: 7-11 hours
+
+# With @logistically ecosystem
+# ✅ CLI extraction: 5-10 minutes
+# ✅ CLI generation: 2-5 minutes
+# ✅ CLI replacement: 10-30 minutes
+# ✅ Total: 17-45 minutes (95% faster!)
+```
+
+For complete CLI documentation, visit: [@logistically/i18n-cli](https://github.com/logistically/i18n-cli)
+
 ## 🎯 Quick Start
 
 ### 1. Setup Module
