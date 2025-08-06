@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-The `@onwello/i18n` library provides comprehensive RTL (Right-to-Left) language support for Arabic, Hebrew, Persian, Urdu, and many other RTL languages. This guide covers all RTL features, configuration options, and best practices.
+The `@logistically/i18n` library provides comprehensive RTL (Right-to-Left) language support for Arabic, Hebrew, Persian, Urdu, and many other RTL languages. This guide covers all RTL features, configuration options, and best practices.
 
 ## 🎯 Supported RTL Languages
 
@@ -59,7 +59,7 @@ The `@onwello/i18n` library provides comprehensive RTL (Right-to-Left) language 
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { TranslationModule } from '@onwello/i18n';
+import { TranslationModule } from '@logistically/i18n';
 
 @Module({
   imports: [
@@ -94,7 +94,7 @@ export class AppModule {}
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { TranslationService } from '@onwello/i18n';
+import { TranslationService } from '@logistically/i18n';
 
 @Injectable()
 export class ProfileService {
@@ -183,7 +183,7 @@ import {
   getTextDirection, 
   wrapWithDirectionalMarkers, 
   cleanDirectionalMarkers 
-} from '@onwello/i18n';
+} from '@logistically/i18n';
 
 // Check if locale is RTL
 isRTL('ar'); // true
@@ -267,7 +267,7 @@ cleanDirectionalMarkers('\u200Fمرحبا\u200EHello'); // "مرحباHello"
 
 ```typescript
 // React component with RTL support
-import { useTranslation } from '@onwello/i18n';
+import { useTranslation } from '@logistically/i18n';
 
 interface ProfileProps {
   locale: string;
@@ -361,7 +361,7 @@ console.log(metadata);
 
 ```typescript
 import { Test } from '@nestjs/testing';
-import { TranslationModule } from '@onwello/i18n';
+import { TranslationModule } from '@logistically/i18n';
 
 describe('RTL Translation', () => {
   let translationService: TranslationService;

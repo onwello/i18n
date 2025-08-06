@@ -1,6 +1,6 @@
 # Performance Guide
 
-This guide covers performance optimizations, tree shaking opportunities, and best practices for @onwello/i18n.
+This guide covers performance optimizations, tree shaking opportunities, and best practices for @logistically/i18n.
 
 ## 🚀 Performance Optimizations
 
@@ -10,10 +10,10 @@ The library supports tree shaking through multiple entry points:
 
 ```typescript
 // Import only what you need
-import { TranslationService } from '@onwello/i18n';
-import { isRTL, getRTLInfo } from '@onwello/i18n/rtl';
-import { Locale, TranslationParams } from '@onwello/i18n/decorators';
-import { TranslatedExceptions } from '@onwello/i18n/exceptions';
+import { TranslationService } from '@logistically/i18n';
+import { isRTL, getRTLInfo } from '@logistically/i18n/rtl';
+import { Locale, TranslationParams } from '@logistically/i18n/decorators';
+import { TranslatedExceptions } from '@logistically/i18n/exceptions';
 ```
 
 ### 2. Lazy Loading
@@ -22,7 +22,7 @@ RTL utilities are lazy-loaded for better performance:
 
 ```typescript
 // RTL locales are loaded only when first accessed
-import { isRTL } from '@onwello/i18n/rtl';
+import { isRTL } from '@logistically/i18n/rtl';
 
 // This triggers lazy loading
 const isArabic = isRTL('ar'); // Locales loaded here
@@ -48,7 +48,7 @@ Pre-compiled regex patterns for RTL text detection:
 
 ```typescript
 // Uses pre-compiled regex for better performance
-import { containsRTLText } from '@onwello/i18n/rtl';
+import { containsRTLText } from '@logistically/i18n/rtl';
 
 const hasRTL = containsRTLText('مرحبا بالعالم'); // Fast detection
 ```
@@ -73,16 +73,16 @@ The library provides multiple entry points for optimal tree shaking:
 
 ```typescript
 // Main bundle (includes everything)
-import { TranslationService, isRTL, Locale } from '@onwello/i18n';
+import { TranslationService, isRTL, Locale } from '@logistically/i18n';
 
 // RTL utilities only (smaller bundle)
-import { isRTL, getRTLInfo } from '@onwello/i18n/rtl';
+import { isRTL, getRTLInfo } from '@logistically/i18n/rtl';
 
 // Decorators only
-import { Locale, TranslationParams } from '@onwello/i18n/decorators';
+import { Locale, TranslationParams } from '@logistically/i18n/decorators';
 
 // Exceptions only
-import { TranslatedExceptions } from '@onwello/i18n/exceptions';
+import { TranslatedExceptions } from '@logistically/i18n/exceptions';
 ```
 
 ### Bundle Sizes
@@ -100,11 +100,11 @@ import { TranslatedExceptions } from '@onwello/i18n/exceptions';
 
 ```typescript
 // ❌ Bad: imports entire library
-import * as Translation from '@onwello/i18n';
+import * as Translation from '@logistically/i18n';
 
 // ✅ Good: imports only what you need
-import { TranslationService } from '@onwello/i18n';
-import { isRTL } from '@onwello/i18n/rtl';
+import { TranslationService } from '@logistically/i18n';
+import { isRTL } from '@logistically/i18n/rtl';
 ```
 
 ### 2. Cache RTL Results
@@ -173,7 +173,7 @@ const config = {
 ### Clear Caches
 
 ```typescript
-import { clearRTLCaches } from '@onwello/i18n/rtl';
+import { clearRTLCaches } from '@logistically/i18n/rtl';
 
 // Clear RTL caches when needed
 clearRTLCaches();

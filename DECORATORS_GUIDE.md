@@ -20,7 +20,7 @@ The main decorator that extracts locale from multiple sources in priority order:
 
 ```typescript
 import { Controller, Get } from '@nestjs/common';
-import { Locale } from '@onwello/i18n';
+import { Locale } from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {
@@ -38,7 +38,7 @@ Extracts locale specifically from JWT tokens in the Authorization header.
 
 ```typescript
 import { Controller, Get } from '@nestjs/common';
-import { LocaleFromJWT } from '@onwello/i18n';
+import { LocaleFromJWT } from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {
@@ -56,7 +56,7 @@ Extracts locale specifically from cookies.
 
 ```typescript
 import { Controller, Get } from '@nestjs/common';
-import { LocaleFromCookies } from '@onwello/i18n';
+import { LocaleFromCookies } from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {
@@ -74,7 +74,7 @@ Extracts locale specifically from HTTP headers.
 
 ```typescript
 import { Controller, Get } from '@nestjs/common';
-import { LocaleFromHeaders } from '@onwello/i18n';
+import { LocaleFromHeaders } from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {
@@ -92,7 +92,7 @@ Extracts locale specifically from query parameters.
 
 ```typescript
 import { Controller, Get } from '@nestjs/common';
-import { LocaleFromQuery } from '@onwello/i18n';
+import { LocaleFromQuery } from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {
@@ -163,7 +163,7 @@ import {
   LocaleFromQuery,
   TranslationService,
   TranslationParams 
-} from '@onwello/i18n';
+} from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {
@@ -256,7 +256,7 @@ All decorators handle errors gracefully:
 
 ```typescript
 import { Controller, Get, BadRequestException } from '@nestjs/common';
-import { Locale, TranslationService } from '@onwello/i18n';
+import { Locale, TranslationService } from '@logistically/i18n';
 
 @Controller('api')
 export class UserController {

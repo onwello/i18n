@@ -1,4 +1,4 @@
-# @onwello/i18n
+# @logistically/i18n
 
 Enterprise-grade internationalization (i18n) library for NestJS microservices with RTL support, tree shaking, and performance optimizations.
 
@@ -19,7 +19,7 @@ Enterprise-grade internationalization (i18n) library for NestJS microservices wi
 ## 📦 Installation
 
 ```bash
-npm install @onwello/i18n
+npm install @logistically/i18n
 ```
 
 ## 🎯 Quick Start
@@ -28,7 +28,7 @@ npm install @onwello/i18n
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { TranslationModule } from '@onwello/i18n';
+import { TranslationModule } from '@logistically/i18n';
 
 @Module({
   imports: [
@@ -75,7 +75,7 @@ export class AppModule {}
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { TranslationService, TranslatedExceptions } from '@onwello/i18n';
+import { TranslationService, TranslatedExceptions } from '@logistically/i18n';
 
 @Injectable()
 export class ProfileService {
@@ -117,7 +117,7 @@ import {
   LocaleFromHeaders, 
   LocaleFromQuery,
   TranslationParams 
-} from '@onwello/i18n';
+} from '@logistically/i18n';
 
 @Controller('profiles')
 export class ProfileController {
@@ -242,7 +242,7 @@ console.log(stats);
 ### Elegant Exception Syntax
 
 ```typescript
-import { TranslatedExceptions, T, Ex } from '@onwello/i18n';
+import { TranslatedExceptions, T, Ex } from '@logistically/i18n';
 
 // Full syntax
 throw TranslatedExceptions.notFound('PROFILE.NOT_FOUND', {
@@ -324,7 +324,7 @@ const direction = translationService.getTextDirection('Hello'); // "ltr"
 ### RTL Utilities
 
 ```typescript
-import { isRTL, getRTLInfo, getRTLLocales, containsRTLText } from '@onwello/i18n';
+import { isRTL, getRTLInfo, getRTLLocales, containsRTLText } from '@logistically/i18n';
 
 // Check if locale is RTL
 isRTL('ar'); // true
@@ -412,7 +412,7 @@ console.log(metadata);
 
 ```typescript
 import { Test } from '@nestjs/testing';
-import { TranslationModule } from '@onwello/i18n';
+import { TranslationModule } from '@logistically/i18n';
 
 describe('ProfileService', () => {
   let translationService: TranslationService;
