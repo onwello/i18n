@@ -1,6 +1,6 @@
 {
   "name": "@logistically/i18n",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Enterprise-grade internationalization (i18n) library for NestJS microservices with RTL support, tree shaking, and performance optimizations",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
