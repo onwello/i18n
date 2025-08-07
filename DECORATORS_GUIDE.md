@@ -2,6 +2,8 @@
 
 This guide covers the enhanced decorators that support multiple locale sources including JWT tokens, cookies, headers, and query parameters.
 
+**📚 Documentation**: [GitHub Repository](https://github.com/onwello/i18n) | [NPM Package](https://www.npmjs.com/package/@logistically/i18n)
+
 ## Overview
 
 Onwello/i18n provides several decorators to extract locale information from different sources in your NestJS application. The decorators follow a priority order to ensure consistent locale detection across your application.

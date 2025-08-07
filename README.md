@@ -576,9 +576,21 @@ describe('ProfileService', () => {
 });
 ```
 
+## 📚 Documentation
+
+- **GitHub Repository**: [https://github.com/onwello/i18n](https://github.com/onwello/i18n)
+- **NPM Package**: [@logistically/i18n](https://www.npmjs.com/package/@logistically/i18n)
+- **CLI Tool**: [@logistically/i18n-cli](https://www.npmjs.com/package/@logistically/i18n-cli)
+
+### 📖 Guides
+
+- [RTL Language Support](RTL_GUIDE.md) - Complete guide for Right-to-Left languages
+- [Performance Optimization](PERFORMANCE_GUIDE.md) - Tree shaking, caching, and best practices
+- [Enhanced Decorators](DECORATORS_GUIDE.md) - Multi-source locale extraction
+
 ## 🤝 Contributing
 
-1. Fork the repository
+1. Fork the [repository](https://github.com/onwello/i18n)
 2. Create a feature branch
 3. Make your changes
 4. Add tests
@@ -586,4 +598,4 @@ describe('ProfileService', () => {
 
 ## 📄 License
 
-MIT License - see LICENSE file for details. 
+MIT License - see [LICENSE](LICENSE) file for details. 

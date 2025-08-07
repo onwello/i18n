@@ -2,6 +2,8 @@
 
 This guide covers performance optimizations, tree shaking opportunities, and best practices for @logistically/i18n.
 
+**📚 Documentation**: [GitHub Repository](https://github.com/onwello/i18n) | [NPM Package](https://www.npmjs.com/package/@logistically/i18n)
+
 ## 🚀 Performance Optimizations
 
 ### 1. Tree Shaking Support

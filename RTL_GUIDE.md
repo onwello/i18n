@@ -4,6 +4,8 @@
 
 The `@logistically/i18n` library provides comprehensive RTL (Right-to-Left) language support for Arabic, Hebrew, Persian, Urdu, and many other RTL languages. This guide covers all RTL features, configuration options, and best practices.
 
+**📚 Documentation**: [GitHub Repository](https://github.com/onwello/i18n) | [NPM Package](https://www.npmjs.com/package/@logistically/i18n)
+
 ## 🎯 Supported RTL Languages
 
 ### Arabic (العربية)
