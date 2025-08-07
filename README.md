@@ -60,7 +60,14 @@ i18n replace            # Apply changes
 - 🛡️ **Security First** - Input validation and output sanitization
 - 📊 **Performance Monitoring** - Real-time metrics and progress tracking
 
-For complete CLI documentation, visit: [@logistically/i18n-cli](https://github.com/logistically/i18n-cli)
+### 🚧 Planned CLI Features
+
+- 🔍 **GraphQL Schema Extraction** - Extract translatable fields from GraphQL schemas
+- 🏷️ **GraphQL Directive Generation** - Generate `@i18n` directives for GraphQL types
+- 📋 **GraphQL Translation Validation** - Validate i18n usage in GraphQL resolvers
+- 🔄 **GraphQL Type Integration** - Seamless integration with GraphQL code-first approach
+
+For complete CLI documentation and usage examples, see the CLI tool's README.
 
 ## 🌐 Complete Translation Ecosystem
 
@@ -152,7 +159,7 @@ export class ProfileService {
 # ✅ Total: 17-45 minutes (95% faster!)
 ```
 
-For complete CLI documentation, visit: [@logistically/i18n-cli](https://github.com/logistically/i18n-cli)
+For complete CLI documentation and usage examples, see the CLI tool's README.
 
 ## 🎯 Quick Start
 
