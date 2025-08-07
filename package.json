@@ -25,6 +25,11 @@
       "import": "./dist/exceptions.esm.js",
       "require": "./dist/exceptions.js",
       "types": "./dist/exceptions.d.ts"
+    },
+    "./graphql": {
+      "import": "./dist/graphql.esm.js",
+      "require": "./dist/graphql.js",
+      "types": "./dist/graphql.d.ts"
     }
   },
   "sideEffects": false,
@@ -46,9 +51,11 @@
     "i18n",
     "internationalization",
     "microservices",
-    "nestjs"
+    "nestjs",
+    "graphql",
+    "apollo"
   ],
-  "author": "Onwello Team",
+  "author": "Logistically Team",
   "license": "MIT",
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -72,6 +79,9 @@
   },
   "peerDependencies": {
     "@nestjs/common": "^10.0.0",
-    "@nestjs/core": "^10.0.0"
+    "@nestjs/core": "^10.0.0",
+    "@apollo/server": "^4.0.0",
+    "graphql": "^16.0.0",
+    "graphql-tag": "^2.0.0"
   }
 }
