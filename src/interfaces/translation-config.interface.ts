@@ -46,6 +46,16 @@ export interface TranslationConfig {
     wrapWithMarkers?: boolean;
     includeDirectionalInfo?: boolean;
   };
+
+  /** Pluralization configuration */
+  pluralization?: {
+    enabled?: boolean;
+    formatNumbers?: boolean;
+    useDirectionalMarkers?: boolean;
+    validatePluralRules?: boolean;
+    trackPluralizationStats?: boolean;
+    ordinal?: boolean;
+  };
 }
 
 /**

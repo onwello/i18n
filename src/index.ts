@@ -26,6 +26,17 @@ export {
   TranslationStats
 } from './interfaces/translation-config.interface';
 
+// Pluralization interfaces
+export {
+  PluralRule,
+  OrdinalRule,
+  LocalePluralConfig,
+  PluralizationOptions,
+  PluralizationResult,
+  ArabicNumeralConfig,
+  RTLPluralizationMetadata
+} from './interfaces/pluralization.interface';
+
 // Re-export NestJS types for convenience
 export { HttpStatus } from '@nestjs/common';
 
