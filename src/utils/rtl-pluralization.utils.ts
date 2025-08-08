@@ -316,10 +316,11 @@ export function processRTLPluralization(
   locale: string,
   pluralRule: Record<string, string>,
   params?: Record<string, any>,
-  useDirectionalMarkers: boolean = true
+  useDirectionalMarkers: boolean = true,
+  customRule?: (count: number) => string
 ): PluralizationResult {
   const config = getPluralConfig(locale);
-  const category = getPluralCategory(count, locale);
+  const category = customRule ? customRule(count) : getPluralCategory(count, locale);
   
   // Map category to possible keys (support both numeric and named keys)
   const categoryKeys = {

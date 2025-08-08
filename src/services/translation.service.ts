@@ -639,7 +639,8 @@ export class TranslationService {
       
       // Process pluralization with RTL support
       const useDirectionalMarkers = this.config.pluralization?.useDirectionalMarkers ?? true;
-      const result = processRTLPluralization(key, count, locale, translation, params, useDirectionalMarkers);
+      const customRule = this.config.pluralization?.customRules?.[locale];
+      const result = processRTLPluralization(key, count, locale, translation, params, useDirectionalMarkers, customRule);
       return result.text;
     }
     
@@ -683,7 +684,8 @@ export class TranslationService {
       
       // Process pluralization with RTL support
       const useDirectionalMarkers = this.config.pluralization?.useDirectionalMarkers ?? true;
-      return processRTLPluralization(key, count, locale, translation, params, useDirectionalMarkers);
+      const customRule = this.config.pluralization?.customRules?.[locale];
+      return processRTLPluralization(key, count, locale, translation, params, useDirectionalMarkers, customRule);
     }
     
     // Fallback for missing translation

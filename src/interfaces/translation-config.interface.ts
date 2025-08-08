@@ -55,6 +55,7 @@ export interface TranslationConfig {
     validatePluralRules?: boolean;
     trackPluralizationStats?: boolean;
     ordinal?: boolean;
+    customRules?: Record<string, (count: number) => string>;
   };
 }
 

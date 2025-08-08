@@ -401,4 +401,46 @@ describe('TranslationService - Pluralization', () => {
       expect(stats.cacheHits).toBe(1);
     });
   });
+
+  describe('Custom Plural Rules', () => {
+    it('should handle custom plural rules', () => {
+      const configWithCustomRules = {
+        ...mockConfig,
+        pluralization: {
+          ...mockConfig.pluralization,
+          customRules: {
+            'ar': (count: number) => {
+              // Custom simplified Arabic rule
+              if (count === 0) return 'zero';
+              if (count === 1) return 'one';
+              return 'other';
+            }
+          }
+        }
+      };
+
+      const mockTranslations = {
+        ar: {
+          'FILES_COUNT': {
+            'zero': 'لا توجد ملفات',
+            'one': '${count} ملف',
+            'other': '${count} ملفات'
+          }
+        }
+      };
+
+      (fs.existsSync as jest.Mock).mockReturnValue(true);
+      (fs.readdirSync as jest.Mock).mockReturnValue(['ar.json']);
+      (fs.readFileSync as jest.Mock).mockReturnValue(JSON.stringify(mockTranslations.ar));
+      (path.resolve as jest.Mock).mockReturnValue('/mock/translations');
+      (path.join as jest.Mock).mockReturnValue('/mock/translations/ar.json');
+      (path.basename as jest.Mock).mockReturnValue('ar');
+
+      service = new TranslationService(configWithCustomRules);
+
+      expect(service.translatePlural('FILES_COUNT', 0, 'ar')).toBe('لا توجد ملفات');
+      expect(service.translatePlural('FILES_COUNT', 1, 'ar')).toBe('١ ملف');
+      expect(service.translatePlural('FILES_COUNT', 5, 'ar')).toBe('٥ ملفات');
+    });
+  });
 });

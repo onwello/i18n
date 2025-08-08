@@ -4,6 +4,19 @@ This guide covers the comprehensive RTL pluralization engine that properly handl
 
 **📚 Documentation**: [GitHub Repository](https://github.com/onwello/i18n) | [NPM Package](https://www.npmjs.com/package/@logistically/i18n)
 
+## 🔗 **CLDR Compatibility**
+
+This pluralization engine is fully compatible with **Unicode CLDR (Common Locale Data Repository)** plural categories and aligns with JavaScript's `Intl.PluralRules` behavior. The plural categories (`zero`, `one`, `two`, `few`, `many`, `other`) follow the CLDR standard, ensuring consistency with other internationalization libraries and tools.
+
+**Key Compatibility Points:**
+- ✅ **CLDR Plural Categories**: All plural categories match CLDR specifications
+- ✅ **Intl.PluralRules Alignment**: Engine behavior matches `Intl.PluralRules` output
+- ✅ **ICU MessageFormat Compatibility**: While we use a custom DSL with `${count}` interpolation, our plural logic is compatible with ICU plural syntax
+- ✅ **Fallback Strategy**: Follows CLDR fallback patterns for missing categories
+
+**ICU MessageFormat Note:**
+This engine does not use ICU MessageFormat syntax. Instead, we use a custom DSL with simple `${count}` interpolation. However, our plural logic and category determination are fully compatible with ICU plural syntax, making it easy to migrate from or to ICU-based systems.
+
 ## 🎯 **Key Features**
 
 - ✅ **Arabic Numeral System Distinction** - Eastern vs Western Arabic numerals
@@ -23,8 +36,8 @@ This guide covers the comprehensive RTL pluralization engine that properly handl
 // Eastern Arabic numerals
 "FILES_COUNT": {
   "0": "لا توجد ملفات",
-  "1": "١ ملف",
-  "2": "٢ ملف", 
+  "1": "${count} ملف",
+  "2": "${count} ملف", 
   "few": "${count} ملفات",
   "many": "${count} ملف",
   "other": "${count} ملف"
@@ -38,8 +51,8 @@ This guide covers the comprehensive RTL pluralization engine that properly handl
 // Western Arabic numerals (North African countries)
 "FILES_COUNT": {
   "0": "لا توجد ملفات",
-  "1": "1 ملف",
-  "2": "2 ملف",
+  "1": "${count} ملف",
+  "2": "${count} ملف",
   "few": "${count} ملفات", 
   "many": "${count} ملف",
   "other": "${count} ملف"
@@ -81,16 +94,16 @@ export class AppModule {}
 {
   "FILES_COUNT": {
     "0": "لا توجد ملفات",
-    "1": "١ ملف",
-    "2": "٢ ملف",
+    "1": "${count} ملف",
+    "2": "${count} ملف",
     "few": "${count} ملفات",
     "many": "${count} ملف", 
     "other": "${count} ملف"
   },
   "UPLOAD_PROGRESS": {
     "0": "لم يتم رفع أي ملف",
-    "1": "تم رفع ملف واحد",
-    "2": "تم رفع ملفين",
+    "1": "تم رفع ${count} ملف",
+    "2": "تم رفع ${count} ملف",
     "few": "تم رفع ${count} ملفات",
     "many": "تم رفع ${count} ملف",
     "other": "تم رفع ${count} ملف"
@@ -101,8 +114,8 @@ export class AppModule {}
 {
   "FILES_COUNT": {
     "0": "لا توجد ملفات",
-    "1": "1 ملف",
-    "2": "2 ملف", 
+    "1": "${count} ملف",
+    "2": "${count} ملف", 
     "few": "${count} ملفات",
     "many": "${count} ملف",
     "other": "${count} ملف"
@@ -238,7 +251,24 @@ service.formatNumberForLocale(123, 'ar');   // "١٢٣"
 service.formatNumberForLocale(123, 'ar-MA'); // "123"
 service.formatNumberForLocale(123, 'he');   // "קכג"
 service.formatNumberForLocale(123, 'en');   // "123"
-```
+
+// Format decimal numbers
+service.formatNumberForLocale(1.5, 'ar');    // "١٫٥"
+service.formatNumberForLocale(3.14, 'ar-MA'); // "3.14"
+service.formatNumberForLocale(2.5, 'he');     // "ב׳ה"
+service.formatNumberForLocale(1.25, 'en');    // "1.25"
+
+// Get pluralization statistics
+const stats = service.getStats();
+console.log('Pluralization stats:', {
+  totalRequests: stats.totalRequests,
+  successfulTranslations: stats.successfulTranslations,
+  failedTranslations: stats.failedTranslations,
+  cacheHits: stats.cacheHits,
+  cacheMisses: stats.cacheMisses,
+  localeUsage: stats.localeUsage,
+  keyUsage: stats.keyUsage
+});
 
 ### **Configuration Options**
 
@@ -250,9 +280,44 @@ TranslationModule.forRoot({
     formatNumbers: true,              // Format numbers according to locale
     useDirectionalMarkers: true,      // Use RTL directional markers
     validatePluralRules: true,        // Validate plural rule structure
-    trackPluralizationStats: true     // Track pluralization statistics
+    trackPluralizationStats: true,    // Track pluralization statistics
+    ordinal: false,                   // Enable ordinal pluralization
+    customRules: {                    // Custom plural rule overrides
+      'ar': (count: number) => {
+        // Custom logic for Arabic dialect
+        if (count === 0) return 'zero';
+        if (count === 1) return 'one';
+        if (count === 2) return 'two';
+        if (count >= 3 && count <= 10) return 'few';
+        if (count >= 11 && count <= 99) return 'many';
+        return 'other';
+      }
+    }
   }
 })
+```
+
+### **Fallback Strategy**
+
+The engine implements a comprehensive fallback strategy for missing translations:
+
+1. **Missing Plural Category**: If a specific plural category is missing in the current locale, the engine tries other categories in this order:
+   - `other` (always available as fallback)
+   - `many` → `few` → `two` → `one` → `zero`
+
+2. **Missing Locale**: If the entire locale is missing:
+   - Falls back to `defaultLocale` if configured
+   - Falls back to `'en'` as final fallback
+   - Returns `"KEY (count)"` format
+
+3. **Missing Translation Key**: If the translation key doesn't exist:
+   - Returns `"KEY (count)"` format
+
+```typescript
+// Example fallback behavior
+service.translatePlural('MISSING_KEY', 5, 'ar');     // "MISSING_KEY (5)"
+service.translatePlural('FILES_COUNT', 5, 'xx');     // Falls back to defaultLocale
+service.translatePlural('FILES_COUNT', 5, 'ar');     // Uses 'other' category if 'many' missing
 ```
 
 ## 🧪 **Testing**
@@ -349,10 +414,18 @@ const arabicPlural = (count: number) => {
 ✅ **Correct**: Using directional markers for mixed content
 ```typescript
 // ✅ Correct: Numbers properly embedded in RTL text
+// Note: Directional markers (LRE/PDF) are automatically inserted by the engine
+// when useDirectionalMarkers: true is set in configuration
 "FILES_COUNT": {
-  "1": "\u202A1\u202C ملف"  // LRE/PDF markers
+  "1": "${count} ملف"  // Engine automatically adds \u202A and \u202C
 }
 ```
+
+**Automatic Directional Marker Insertion:**
+- Directional markers (`\u202A`, `\u202B`, `\u202C`) are automatically inserted by the translation engine
+- Only applied when `useDirectionalMarkers: true` in configuration
+- No need to manually embed markers in translation strings
+- Engine detects mixed LTR/RTL content and applies appropriate markers
 
 ### 4. **Incorrect Number Formatting**
 

@@ -7,6 +7,7 @@ Enterprise-grade internationalization (i18n) library for NestJS microservices wi
 - **Multi-locale support** - Support for unlimited locales
 - **RTL language support** - Full support for Arabic, Hebrew, Persian, Urdu, and other RTL languages
 - **Parameter interpolation** - Dynamic content in translations
+- **Number formatting** - Locale-aware number formatting with proper numeral systems
 - **Caching with TTL** - Performance optimization
 - **Statistics tracking** - Monitor translation usage
 - **Fallback strategies** - Graceful handling of missing translations
@@ -138,6 +139,8 @@ export class ProfileService {
 | Feature | Library | CLI | Combined |
 |---------|---------|-----|----------|
 | **RTL Support** | ✅ Full support | ✅ Generation | ✅ Complete workflow |
+| **Number Formatting** | ✅ Built-in with numeral systems | ✅ Generation | ✅ Complete workflow |
+| **Date/Currency** | 🔗 Native Intl API | ✅ Generation | ✅ Complete workflow |
 | **Performance** | ✅ Caching, Tree shaking | ✅ Concurrent processing | ✅ Optimized end-to-end |
 | **Security** | ✅ Input validation | ✅ Sanitization | ✅ Enterprise-grade |
 | **Type Safety** | ✅ TypeScript | ✅ TypeScript | ✅ Complete coverage |
@@ -407,6 +410,134 @@ throw TranslatedExceptions.http('CUSTOM.ERROR', 422, {
 const message = T.t('PROFILE.NOT_FOUND', 'fr', { profileId: '123' });
 ```
 
+## 🔢 Formatting Features
+
+The library provides comprehensive formatting support for numbers, dates, and currencies using the native `Intl` API.
+
+### **Number Formatting**
+
+The library includes built-in number formatting with proper numeral systems for different locales:
+
+```typescript
+// Basic number formatting
+service.formatNumberForLocale(123, 'en');     // "123"
+service.formatNumberForLocale(123, 'ar');     // "١٢٣" (Eastern Arabic)
+service.formatNumberForLocale(123, 'ar-MA');  // "123" (Western Arabic)
+service.formatNumberForLocale(123, 'he');     // "קכג" (Hebrew)
+
+// Decimal number formatting
+service.formatNumberForLocale(1.5, 'en');     // "1.5"
+service.formatNumberForLocale(1.5, 'ar');     // "١٫٥"
+service.formatNumberForLocale(1.5, 'fr');     // "1,5"
+
+// Large numbers with grouping
+service.formatNumberForLocale(1234567, 'en'); // "1,234,567"
+service.formatNumberForLocale(1234567, 'ar'); // "١٬٢٣٤٬٥٦٧"
+service.formatNumberForLocale(1234567, 'fr'); // "1 234 567"
+```
+
+### **Date & Currency Formatting**
+
+For date and currency formatting, the library relies on the native `Intl` API:
+
+```typescript
+// Date formatting using Intl.DateTimeFormat
+const date = new Date('2024-01-15');
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+console.log(dateFormatter.format(date)); // "January 15, 2024"
+
+// Currency formatting using Intl.NumberFormat
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+});
+console.log(currencyFormatter.format(1234.56)); // "$1,234.56"
+
+// Locale-specific formatting
+const arabicDateFormatter = new Intl.DateTimeFormat('ar-SA', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+console.log(arabicDateFormatter.format(date)); // "١٥ يناير ٢٠٢٤"
+```
+
+### **Formatting Configuration**
+
+The library supports locale-specific formatting options:
+
+```typescript
+// Configure number formatting options
+const config = {
+  serviceName: 'my-service',
+  pluralization: {
+    enabled: true,
+    formatNumbers: true,  // Enable automatic number formatting
+    numberFormatOptions: {
+      useGrouping: true,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }
+  }
+};
+```
+
+### **RTL Number Formatting**
+
+Special handling for RTL languages with proper numeral systems:
+
+```typescript
+// Arabic numerals (Eastern)
+service.formatNumberForLocale(123, 'ar');     // "١٢٣"
+service.formatNumberForLocale(123, 'fa');     // "١٢٣"
+service.formatNumberForLocale(123, 'ur');     // "١٢٣"
+
+// Arabic numerals (Western) - North African countries
+service.formatNumberForLocale(123, 'ar-MA');  // "123"
+service.formatNumberForLocale(123, 'ar-DZ');  // "123"
+
+// Hebrew numerals
+service.formatNumberForLocale(123, 'he');     // "קכג"
+```
+
+### **Formatting Approach**
+
+The library takes a **hybrid approach** to formatting:
+
+#### **Built-in Features:**
+- ✅ **Number formatting** - Custom implementation with proper numeral systems
+- ✅ **RTL number formatting** - Special handling for Arabic/Hebrew numerals
+- ✅ **Pluralization integration** - Automatic number formatting in pluralized strings
+
+#### **External API Integration:**
+- 🔗 **Date formatting** - Uses native `Intl.DateTimeFormat`
+- 🔗 **Currency formatting** - Uses native `Intl.NumberFormat`
+- 🔗 **Advanced number formatting** - Uses native `Intl.NumberFormat`
+
+#### **Benefits of This Approach:**
+- **No external dependencies** - Uses built-in browser APIs
+- **Standards compliance** - Follows Unicode CLDR specifications
+- **Performance** - Native APIs are highly optimized
+- **Maintenance** - No need to maintain formatting libraries
+- **Compatibility** - Works with all modern browsers and Node.js
+
+#### **When to Use Each:**
+
+```typescript
+// ✅ Use library's formatNumberForLocale for basic numbers
+service.formatNumberForLocale(123, 'ar'); // "١٢٣"
+
+// ✅ Use Intl.DateTimeFormat for dates
+new Intl.DateTimeFormat('ar-SA').format(new Date());
+
+// ✅ Use Intl.NumberFormat for currencies
+new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR' }).format(1234.56);
+```
+
 ## 🌐 RTL (Right-to-Left) Language Support
 
 The library provides comprehensive RTL support for Arabic, Hebrew, Persian, Urdu, and other RTL languages.
@@ -538,6 +669,13 @@ console.log(metadata);
 | `rtl.autoDetect` | `boolean` | `true` | Auto-detect RTL text content |
 | `rtl.wrapWithMarkers` | `boolean` | `false` | Wrap text with directional markers |
 | `rtl.includeDirectionalInfo` | `boolean` | `true` | Include RTL info in metadata |
+| `pluralization.enabled` | `boolean` | `true` | Enable pluralization |
+| `pluralization.formatNumbers` | `boolean` | `true` | Enable number formatting |
+| `pluralization.useDirectionalMarkers` | `boolean` | `true` | Use RTL directional markers |
+| `pluralization.validatePluralRules` | `boolean` | `true` | Validate plural rule structure |
+| `pluralization.trackPluralizationStats` | `boolean` | `true` | Track pluralization statistics |
+| `pluralization.ordinal` | `boolean` | `false` | Enable ordinal pluralization |
+| `pluralization.customRules` | `Record<string, (count: number) => string>` | `{}` | Custom plural rules |
 
 ## 📊 Performance
 
