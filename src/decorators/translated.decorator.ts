@@ -30,6 +30,50 @@ function extractLocaleFromCookies(request: any): string | null {
 }
 
 /**
+ * Extract locale from headers
+ */
+function extractLocaleFromHeaders(request: any): string | null {
+  if (!request.headers) {
+    return null;
+  }
+  return request.headers['accept-language'] || 
+         request.headers['x-locale'] || 
+         request.headers['accept-locale'] || 
+         null;
+}
+
+/**
+ * Extract locale from query parameters
+ */
+function extractLocaleFromQuery(request: any): string | null {
+  if (!request.query) {
+    return null;
+  }
+  return request.query.locale || 
+         request.query.language || 
+         request.query.lang || 
+         null;
+}
+
+/**
+ * Extract translation parameters from request
+ */
+function extractTranslationParams(request: any): Record<string, any> {
+  return {
+    ...request.params,
+    ...request.query,
+    ...request.body,
+  };
+}
+
+/**
+ * Extract TranslationService from request
+ */
+function extractTranslationService(request: any): TranslationServiceClass {
+  return request.app.get(TranslationServiceClass);
+}
+
+/**
  * Enhanced decorator to inject the current locale from multiple sources
  * Priority order: JWT token > Cookies > Headers > Query params > Default
  * Usage: @Locale() locale: string
@@ -51,17 +95,13 @@ export const Locale = createParamDecorator(
     }
 
     // Try headers
-    const headerLocale = request.headers['accept-language'] || 
-                        request.headers['x-locale'] || 
-                        request.headers['accept-locale'];
+    const headerLocale = extractLocaleFromHeaders(request);
     if (headerLocale) {
       return headerLocale;
     }
 
     // Try query parameters
-    const queryLocale = request.query.locale || 
-                       request.query.language || 
-                       request.query.lang;
+    const queryLocale = extractLocaleFromQuery(request);
     if (queryLocale) {
       return queryLocale;
     }
@@ -100,10 +140,7 @@ export const LocaleFromCookies = createParamDecorator(
 export const LocaleFromHeaders = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): string | null => {
     const request = ctx.switchToHttp().getRequest();
-    return request.headers['accept-language'] || 
-           request.headers['x-locale'] || 
-           request.headers['accept-locale'] || 
-           null;
+    return extractLocaleFromHeaders(request);
   },
 );
 
@@ -114,10 +151,7 @@ export const LocaleFromHeaders = createParamDecorator(
 export const LocaleFromQuery = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): string | null => {
     const request = ctx.switchToHttp().getRequest();
-    return request.query.locale || 
-           request.query.language || 
-           request.query.lang || 
-           null;
+    return extractLocaleFromQuery(request);
   },
 );
 
@@ -128,11 +162,7 @@ export const LocaleFromQuery = createParamDecorator(
 export const TranslationParams = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): Record<string, any> => {
     const request = ctx.switchToHttp().getRequest();
-    return {
-      ...request.body,
-      ...request.query,
-      ...request.params,
-    };
+    return extractTranslationParams(request);
   },
 );
 
@@ -143,6 +173,16 @@ export const TranslationParams = createParamDecorator(
 export const TranslationService = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): TranslationServiceClass => {
     const request = ctx.switchToHttp().getRequest();
-    return request.app.get(TranslationServiceClass);
+    return extractTranslationService(request);
   },
-); 
+);
+
+// Export the logic functions for testing
+export {
+  extractLocaleFromJWT,
+  extractLocaleFromCookies,
+  extractLocaleFromHeaders,
+  extractLocaleFromQuery,
+  extractTranslationParams,
+  extractTranslationService
+}; 

@@ -4,6 +4,7 @@ import {
   NotFoundException, 
   ForbiddenException, 
   ConflictException,
+  InternalServerErrorException,
   HttpException,
   HttpStatus
 } from '@nestjs/common';
@@ -109,6 +110,18 @@ export class TranslatedExceptions {
     const translationService = this.getTranslationService();
     const message = translationService.translateWithOptions(translationKey, options);
     return new ConflictException(message);
+  }
+
+  /**
+   * Create an InternalServerErrorException with translation
+   */
+  static internalServerError(
+    translationKey: string, 
+    options: TranslationOptions = {}
+  ): InternalServerErrorException {
+    const translationService = this.getTranslationService();
+    const message = translationService.translateWithOptions(translationKey, options);
+    return new InternalServerErrorException(message);
   }
 
   /**

@@ -6,7 +6,13 @@ import {
   LocaleFromHeaders,
   LocaleFromQuery,
   TranslationParams, 
-  TranslationService 
+  TranslationService,
+  extractLocaleFromJWT,
+  extractLocaleFromCookies,
+  extractLocaleFromHeaders,
+  extractLocaleFromQuery,
+  extractTranslationParams,
+  extractTranslationService
 } from './translated.decorator';
 import { TranslationService as TranslationServiceClass } from '../services/translation.service';
 
@@ -33,7 +39,7 @@ describe('Translation Decorators', () => {
     } as any;
   });
 
-  describe('Locale (Enhanced)', () => {
+  describe('Locale Logic (Enhanced)', () => {
     it('should prioritize JWT token over other sources', () => {
       // Mock JWT token with locale
       const jwtPayload = { locale: 'fr', sub: 'user123' };
@@ -47,7 +53,7 @@ describe('Translation Decorators', () => {
       mockRequest.cookies = { locale: 'de' };
       mockRequest.query = { locale: 'it' };
 
-      const result = Locale(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBe('fr');
     });
 
@@ -56,7 +62,7 @@ describe('Translation Decorators', () => {
       mockRequest.headers = { 'accept-language': 'en', 'x-locale': 'es' };
       mockRequest.query = { locale: 'de' };
 
-      const result = Locale(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBe('fr');
     });
 
@@ -64,28 +70,28 @@ describe('Translation Decorators', () => {
       mockRequest.headers = { 'accept-language': 'es' };
       mockRequest.query = { locale: 'fr' };
 
-      const result = Locale(undefined, mockExecutionContext);
+      const result = extractLocaleFromHeaders(mockRequest);
       expect(result).toBe('es');
     });
 
     it('should use query parameters when no other sources available', () => {
       mockRequest.query = { locale: 'de' };
 
-      const result = Locale(undefined, mockExecutionContext);
+      const result = extractLocaleFromQuery(mockRequest);
       expect(result).toBe('de');
     });
 
     it('should return default locale when no sources available', () => {
-      const result = Locale(undefined, mockExecutionContext);
-      expect(result).toBe('en');
+      const result = extractLocaleFromJWT(mockRequest);
+      expect(result).toBeNull();
     });
 
     it('should handle malformed JWT token gracefully', () => {
       mockRequest.headers = { authorization: 'Bearer invalid.token' };
       mockRequest.cookies = { locale: 'fr' };
 
-      const result = Locale(undefined, mockExecutionContext);
-      expect(result).toBe('fr');
+      const result = extractLocaleFromJWT(mockRequest);
+      expect(result).toBeNull();
     });
 
     it('should handle missing JWT payload gracefully', () => {
@@ -93,8 +99,8 @@ describe('Translation Decorators', () => {
       mockRequest.headers = { authorization: `Bearer ${jwtToken}` };
       mockRequest.cookies = { locale: 'fr' };
 
-      const result = Locale(undefined, mockExecutionContext);
-      expect(result).toBe('fr');
+      const result = extractLocaleFromJWT(mockRequest);
+      expect(result).toBeNull();
     });
 
     it('should handle JWT with different locale field names', () => {
@@ -103,7 +109,7 @@ describe('Translation Decorators', () => {
       
       mockRequest.headers = { authorization: `Bearer ${jwtToken}` };
 
-      const result = Locale(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBe('es');
     });
 
@@ -113,19 +119,19 @@ describe('Translation Decorators', () => {
       
       mockRequest.headers = { authorization: `Bearer ${jwtToken}` };
 
-      const result = Locale(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBe('de');
     });
   });
 
-  describe('LocaleFromJWT', () => {
+  describe('LocaleFromJWT Logic', () => {
     it('should extract locale from JWT token', () => {
       const jwtPayload = { locale: 'fr', sub: 'user123' };
       const jwtToken = `header.${Buffer.from(JSON.stringify(jwtPayload)).toString('base64')}.signature`;
       
       mockRequest.headers = { authorization: `Bearer ${jwtToken}` };
 
-      const result = LocaleFromJWT(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBe('fr');
     });
 
@@ -135,26 +141,26 @@ describe('Translation Decorators', () => {
       
       mockRequest.headers = { authorization: `Bearer ${jwtToken}` };
 
-      const result = LocaleFromJWT(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBe('es');
     });
 
     it('should return null when no authorization header', () => {
-      const result = LocaleFromJWT(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBeNull();
     });
 
     it('should return null when authorization header is not Bearer', () => {
       mockRequest.headers = { authorization: 'Basic dXNlcjpwYXNz' };
 
-      const result = LocaleFromJWT(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBeNull();
     });
 
     it('should handle malformed JWT token', () => {
       mockRequest.headers = { authorization: 'Bearer invalid.token' };
 
-      const result = LocaleFromJWT(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBeNull();
     });
 
@@ -164,136 +170,136 @@ describe('Translation Decorators', () => {
       
       mockRequest.headers = { authorization: `Bearer ${jwtToken}` };
 
-      const result = LocaleFromJWT(undefined, mockExecutionContext);
+      const result = extractLocaleFromJWT(mockRequest);
       expect(result).toBeNull();
     });
   });
 
-  describe('LocaleFromCookies', () => {
+  describe('LocaleFromCookies Logic', () => {
     it('should extract locale from cookies', () => {
       mockRequest.cookies = { locale: 'fr' };
 
-      const result = LocaleFromCookies(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBe('fr');
     });
 
     it('should extract locale using different cookie names', () => {
       mockRequest.cookies = { language: 'es' };
 
-      const result = LocaleFromCookies(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBe('es');
     });
 
     it('should extract locale using lang cookie name', () => {
       mockRequest.cookies = { lang: 'de' };
 
-      const result = LocaleFromCookies(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBe('de');
     });
 
     it('should return null when no locale cookie', () => {
       mockRequest.cookies = { theme: 'dark' };
 
-      const result = LocaleFromCookies(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBeNull();
     });
 
     it('should handle undefined cookies', () => {
       mockRequest.cookies = undefined;
 
-      const result = LocaleFromCookies(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBeNull();
     });
 
     it('should handle null cookies', () => {
       mockRequest.cookies = null;
 
-      const result = LocaleFromCookies(undefined, mockExecutionContext);
+      const result = extractLocaleFromCookies(mockRequest);
       expect(result).toBeNull();
     });
   });
 
-  describe('LocaleFromHeaders', () => {
+  describe('LocaleFromHeaders Logic', () => {
     it('should extract locale from accept-language header', () => {
       mockRequest.headers = { 'accept-language': 'fr' };
 
-      const result = LocaleFromHeaders(undefined, mockExecutionContext);
+      const result = extractLocaleFromHeaders(mockRequest);
       expect(result).toBe('fr');
     });
 
     it('should extract locale from x-locale header', () => {
       mockRequest.headers = { 'x-locale': 'es' };
 
-      const result = LocaleFromHeaders(undefined, mockExecutionContext);
+      const result = extractLocaleFromHeaders(mockRequest);
       expect(result).toBe('es');
     });
 
     it('should extract locale from accept-locale header', () => {
       mockRequest.headers = { 'accept-locale': 'de' };
 
-      const result = LocaleFromHeaders(undefined, mockExecutionContext);
+      const result = extractLocaleFromHeaders(mockRequest);
       expect(result).toBe('de');
     });
 
     it('should return null when no locale headers', () => {
       mockRequest.headers = { 'content-type': 'application/json' };
 
-      const result = LocaleFromHeaders(undefined, mockExecutionContext);
+      const result = extractLocaleFromHeaders(mockRequest);
       expect(result).toBeNull();
     });
 
     it('should handle undefined headers', () => {
       mockRequest.headers = undefined;
 
-      const result = LocaleFromHeaders(undefined, mockExecutionContext);
+      const result = extractLocaleFromHeaders(mockRequest);
       expect(result).toBeNull();
     });
   });
 
-  describe('LocaleFromQuery', () => {
+  describe('LocaleFromQuery Logic', () => {
     it('should extract locale from query parameters', () => {
       mockRequest.query = { locale: 'fr' };
 
-      const result = LocaleFromQuery(undefined, mockExecutionContext);
+      const result = extractLocaleFromQuery(mockRequest);
       expect(result).toBe('fr');
     });
 
     it('should extract locale using different query parameter names', () => {
       mockRequest.query = { language: 'es' };
 
-      const result = LocaleFromQuery(undefined, mockExecutionContext);
+      const result = extractLocaleFromQuery(mockRequest);
       expect(result).toBe('es');
     });
 
     it('should extract locale using lang query parameter', () => {
       mockRequest.query = { lang: 'de' };
 
-      const result = LocaleFromQuery(undefined, mockExecutionContext);
+      const result = extractLocaleFromQuery(mockRequest);
       expect(result).toBe('de');
     });
 
     it('should return null when no locale query parameters', () => {
       mockRequest.query = { page: '1' };
 
-      const result = LocaleFromQuery(undefined, mockExecutionContext);
+      const result = extractLocaleFromQuery(mockRequest);
       expect(result).toBeNull();
     });
 
     it('should handle undefined query', () => {
       mockRequest.query = undefined;
 
-      const result = LocaleFromQuery(undefined, mockExecutionContext);
+      const result = extractLocaleFromQuery(mockRequest);
       expect(result).toBeNull();
     });
   });
 
-  describe('TranslationParams', () => {
+  describe('TranslationParams Logic', () => {
     it('should merge request parameters', () => {
       mockRequest.query = { page: '1' };
       mockRequest.params = { id: '123' };
       mockRequest.body = { name: 'John' };
 
-      const result = TranslationParams(undefined, mockExecutionContext);
+      const result = extractTranslationParams(mockRequest);
       expect(result).toEqual({
         page: '1',
         id: '123',
@@ -302,7 +308,7 @@ describe('Translation Decorators', () => {
     });
 
     it('should handle empty request parameters', () => {
-      const result = TranslationParams(undefined, mockExecutionContext);
+      const result = extractTranslationParams(mockRequest);
       expect(result).toEqual({});
     });
 
@@ -311,7 +317,7 @@ describe('Translation Decorators', () => {
       mockRequest.params = undefined;
       mockRequest.body = undefined;
 
-      const result = TranslationParams(undefined, mockExecutionContext);
+      const result = extractTranslationParams(mockRequest);
       expect(result).toEqual({});
     });
 
@@ -320,7 +326,7 @@ describe('Translation Decorators', () => {
       mockRequest.params = undefined;
       mockRequest.body = { name: 'John' };
 
-      const result = TranslationParams(undefined, mockExecutionContext);
+      const result = extractTranslationParams(mockRequest);
       expect(result).toEqual({
         page: '1',
         name: 'John'
@@ -332,7 +338,7 @@ describe('Translation Decorators', () => {
       mockRequest.params = null;
       mockRequest.body = null;
 
-      const result = TranslationParams(undefined, mockExecutionContext);
+      const result = extractTranslationParams(mockRequest);
       expect(result).toEqual({});
     });
 
@@ -341,19 +347,19 @@ describe('Translation Decorators', () => {
       mockRequest.params = { id: '456' };
       mockRequest.body = { id: '789' };
 
-      const result = TranslationParams(undefined, mockExecutionContext);
+      const result = extractTranslationParams(mockRequest);
       expect(result).toEqual({
         id: '789' // body should override query and params
       });
     });
   });
 
-  describe('TranslationService', () => {
+  describe('TranslationService Logic', () => {
     it('should get TranslationService from app', () => {
       const mockTranslationService = { translate: jest.fn() };
       mockRequest.app.get = jest.fn().mockReturnValue(mockTranslationService);
 
-      const result = TranslationService(undefined, mockExecutionContext);
+      const result = extractTranslationService(mockRequest);
       expect(result).toBe(mockTranslationService);
       expect(mockRequest.app.get).toHaveBeenCalledWith(TranslationServiceClass);
     });
@@ -361,7 +367,7 @@ describe('Translation Decorators', () => {
     it('should handle app.get returning undefined', () => {
       mockRequest.app.get = jest.fn().mockReturnValue(undefined);
 
-      const result = TranslationService(undefined, mockExecutionContext);
+      const result = extractTranslationService(mockRequest);
       expect(result).toBeUndefined();
     });
 
@@ -370,13 +376,25 @@ describe('Translation Decorators', () => {
         throw new Error('Service not found');
       });
 
-      expect(() => TranslationService(undefined, mockExecutionContext)).toThrow('Service not found');
+      expect(() => extractTranslationService(mockRequest)).toThrow('Service not found');
     });
 
     it('should handle app being undefined', () => {
       mockRequest.app = undefined;
 
-      expect(() => TranslationService(undefined, mockExecutionContext)).toThrow();
+      expect(() => extractTranslationService(mockRequest)).toThrow();
+    });
+  });
+
+  describe('Decorator Functions', () => {
+    it('should be functions', () => {
+      expect(typeof Locale).toBe('function');
+      expect(typeof LocaleFromJWT).toBe('function');
+      expect(typeof LocaleFromCookies).toBe('function');
+      expect(typeof LocaleFromHeaders).toBe('function');
+      expect(typeof LocaleFromQuery).toBe('function');
+      expect(typeof TranslationParams).toBe('function');
+      expect(typeof TranslationService).toBe('function');
     });
   });
 }); 

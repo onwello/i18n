@@ -17,6 +17,17 @@ import {
   getSupportedRTLLocales,
   hasComplexPluralRules
 } from '../utils/rtl-pluralization.utils';
+import {
+  formatDateForLocale,
+  formatDateWithCustomFormat,
+  formatDateRangeForLocale,
+  formatRelativeDate,
+  getDateFormatConfig,
+  getSupportedDateLocales,
+  isDateLocaleSupported,
+  getDateFormatInfo,
+  DateFormatConfig
+} from '../utils/date-formatting.utils';
 import { PluralizationResult, PluralizationOptions } from '../interfaces/pluralization.interface';
 
 /**
@@ -337,6 +348,87 @@ export class TranslationService {
    */
   formatNumberForLocale(num: number, locale: string): string {
     return formatNumberForLocaleUtil(num, locale);
+  }
+
+  /**
+   * Format a date for a specific locale
+   */
+  formatDateForLocale(
+    date: Date | string | number,
+    locale: string = this.config.defaultLocale!,
+    options?: Partial<DateFormatConfig>
+  ): string {
+    return formatDateForLocale(date, locale, options);
+  }
+
+  /**
+   * Format a date with custom format string
+   */
+  formatDateWithCustomFormat(
+    date: Date | string | number,
+    locale: string = this.config.defaultLocale!,
+    format: string
+  ): string {
+    return formatDateWithCustomFormat(date, locale, format);
+  }
+
+  /**
+   * Format a date range for a specific locale
+   */
+  formatDateRangeForLocale(
+    startDate: Date | string | number,
+    endDate: Date | string | number,
+    locale: string = this.config.defaultLocale!,
+    options?: Partial<DateFormatConfig>
+  ): string {
+    return formatDateRangeForLocale(startDate, endDate, locale, options);
+  }
+
+  /**
+   * Format a relative date (e.g., "2 days ago", "next week")
+   */
+  formatRelativeDate(
+    date: Date | string | number,
+    locale: string = this.config.defaultLocale!
+  ): string {
+    return formatRelativeDate(date, locale);
+  }
+
+  /**
+   * Get date format configuration for a locale
+   */
+  getDateFormatConfig(
+    locale: string = this.config.defaultLocale!,
+    options?: Partial<DateFormatConfig>
+  ): DateFormatConfig {
+    return getDateFormatConfig(locale, options);
+  }
+
+  /**
+   * Get supported date formatting locales
+   */
+  getSupportedDateLocales(): string[] {
+    return getSupportedDateLocales();
+  }
+
+  /**
+   * Check if a locale supports date formatting
+   */
+  isDateLocaleSupported(locale: string): boolean {
+    return isDateLocaleSupported(locale);
+  }
+
+  /**
+   * Get date formatting information for a locale
+   */
+  getDateFormatInfo(locale: string = this.config.defaultLocale!): {
+    locale: string;
+    format: string;
+    numberingSystem: string;
+    calendar: string;
+    supported: boolean;
+  } {
+    return getDateFormatInfo(locale);
   }
 
   /**

@@ -5,7 +5,7 @@ import {
   LocaleFromHeaders,
   LocaleFromQuery,
   TranslationParams,
-  TranslationService as TranslationServiceDecorator 
+  TranslationServiceDecorator 
 } from './decorators';
 
 describe('Decorators Utilities', () => {
@@ -75,7 +75,7 @@ describe('Decorators Utilities', () => {
     });
   });
 
-  describe('TranslationService', () => {
+  describe('TranslationServiceDecorator', () => {
     it('should be a function', () => {
       expect(typeof TranslationServiceDecorator).toBe('function');
     });
