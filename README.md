@@ -18,6 +18,7 @@ Enterprise-grade internationalization (i18n) library for NestJS microservices wi
 - **Dependency injection** - Seamless NestJS integration
 - **Elegant exception handling** - Translated exceptions with clean syntax
 - **Enhanced decorators** - Multi-source locale extraction (JWT, cookies, headers, query params)
+- **GraphQL integration** - Apollo Server plugin with automatic field translation
 - **Performance testing** - Comprehensive performance benchmarks
 - **Integration testing** - Real NestJS usage validation
 
@@ -210,6 +211,71 @@ export class ProfileController {
 3. **Headers** - `Accept-Language`, `X-Locale`, `Accept-Locale`
 4. **Query Parameters** - `?locale=`, `?language=`, `?lang=`
 5. **Default** - Falls back to configured default locale
+
+### 5. GraphQL Integration
+
+The library provides seamless GraphQL integration with Apollo Server:
+
+```typescript
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloI18nPlugin, i18nSchemaExtensions } from '@logistically/i18n/graphql';
+import { TranslationService } from '@logistically/i18n';
+
+// Create translation service
+const translationService = new TranslationService({
+  serviceName: 'graphql-service',
+  defaultLocale: 'en',
+  supportedLocales: ['en', 'fr', 'es', 'ar'],
+  translationsPath: 'src/translations'
+});
+
+// Create Apollo server with i18n plugin
+const server = new ApolloServer({
+  typeDefs: [yourSchema, i18nSchemaExtensions],
+  resolvers: [yourResolvers],
+  plugins: [
+    new ApolloI18nPlugin({
+      translationService,
+      defaultLocale: 'en',
+      supportedLocales: ['en', 'fr', 'es', 'ar']
+    })
+  ]
+});
+```
+
+#### Use @i18n Directive
+
+```graphql
+type User {
+  id: ID!
+  name: String! @i18n(key: "USER.NAME")
+  bio: String @i18n(key: "USER.BIO")
+  status: String! @i18n(key: "USER.STATUS")
+}
+
+type Product {
+  id: ID!
+  name: String! @i18n(key: "PRODUCT.NAME")
+  description: String! @i18n(key: "PRODUCT.DESCRIPTION")
+  status: String! @i18n(key: "PRODUCT.STATUS", params: { status: "status" })
+}
+```
+
+#### Query with Automatic Translation
+
+```graphql
+query GetUser($id: ID!) {
+  user(id: $id) {
+    id
+    name  # Automatically translated based on Accept-Language header
+    bio   # Automatically translated
+    status # Automatically translated
+  }
+}
+```
+
+For detailed GraphQL integration guide, see [GRAPHQL_GUIDE.md](./GRAPHQL_GUIDE.md).
 
 #### JWT Token Format:
 

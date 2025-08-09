@@ -10,7 +10,6 @@ export {
   LocaleFromCookies, 
   LocaleFromHeaders, 
   LocaleFromQuery,
-  TranslationParams,
   TranslationService as TranslationServiceDecorator 
 } from './decorators/translated.decorator';
 
