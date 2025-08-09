@@ -122,5 +122,35 @@ export default [
         }
       })
     ]
+  },
+  // GraphQL bundle
+  {
+    input: 'src/graphql/index.ts',
+    output: [
+      {
+        file: 'dist/graphql.js',
+        format: 'cjs',
+        sourcemap: true,
+        exports: 'named'
+      },
+      {
+        file: 'dist/graphql.esm.js',
+        format: 'esm',
+        sourcemap: true,
+        exports: 'named'
+      }
+    ],
+    external: ['@nestjs/common', '@nestjs/core', '@apollo/server', 'graphql', 'graphql-tag'],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript({ tsconfig: './tsconfig.json' }),
+      terser({
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      })
+    ]
   }
 ]; 

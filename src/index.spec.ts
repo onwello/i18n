@@ -127,4 +127,29 @@ describe('Translation Library Exports', () => {
       expect(TranslationLibrary.getTextDirection('Hello مرحبا')).toBe('auto');
     });
   });
+
+  describe('GraphQL Integration', () => {
+    it('should export GraphQLTranslationUtils', () => {
+      expect(TranslationLibrary.GraphQLTranslationUtils).toBeDefined();
+      expect(typeof TranslationLibrary.GraphQLTranslationUtils).toBe('function');
+    });
+
+    it('should export TranslatedField', () => {
+      expect(TranslationLibrary.TranslatedField).toBeDefined();
+      expect(typeof TranslationLibrary.TranslatedField).toBe('function');
+    });
+
+    it('should export i18nSchemaExtensions', () => {
+      expect(TranslationLibrary.i18nSchemaExtensions).toBeDefined();
+    });
+
+    it('should export exampleSchema', () => {
+      expect(TranslationLibrary.exampleSchema).toBeDefined();
+    });
+
+    it('should export I18nSchemaUtils', () => {
+      expect(TranslationLibrary.I18nSchemaUtils).toBeDefined();
+      expect(typeof TranslationLibrary.I18nSchemaUtils).toBe('function');
+    });
+  });
 }); 

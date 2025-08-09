@@ -1,19 +1,16 @@
-// Core services
+// Main exports
 export { TranslationService } from './services/translation.service';
-
-// Exception utilities
-export { TranslatedExceptions, T, Ex } from './utils/translated-exceptions';
-
-// Module
 export { TranslationModule } from './modules/translation.module';
+export { TranslatedExceptions, T, Ex } from './utils/translated-exceptions';
 
 // Decorators
 export { 
   Locale, 
-  LocaleFromJWT,
-  LocaleFromCookies,
-  LocaleFromHeaders,
+  LocaleFromJWT, 
+  LocaleFromCookies, 
+  LocaleFromHeaders, 
   LocaleFromQuery,
+  TranslationParams,
   TranslationService as TranslationServiceDecorator 
 } from './decorators/translated.decorator';
 
@@ -37,9 +34,6 @@ export {
   RTLPluralizationMetadata
 } from './interfaces/pluralization.interface';
 
-// Re-export NestJS types for convenience
-export { HttpStatus } from '@nestjs/common';
-
 // RTL utilities
 export { 
   isRTL, 
@@ -49,5 +43,18 @@ export {
   containsRTLText, 
   getTextDirection, 
   wrapWithDirectionalMarkers, 
-  cleanDirectionalMarkers 
-} from './utils/rtl.utils'; 
+  cleanDirectionalMarkers,
+  clearRTLCaches 
+} from './utils/rtl.utils';
+
+// GraphQL integration
+export { ApolloI18nPlugin } from './graphql/apollo-plugin';
+export { GraphQLTranslationUtils, TranslatedField } from './graphql/utilities';
+export { i18nSchemaExtensions, exampleSchema, I18nSchemaUtils } from './graphql/schema-extensions';
+
+// Re-export GraphQL types for convenience
+export type { ApolloI18nConfig } from './graphql/apollo-plugin';
+export type { GraphQLContext } from './graphql/utilities';
+
+// Re-export NestJS types for convenience
+export { HttpStatus } from '@nestjs/common'; 
